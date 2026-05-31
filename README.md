@@ -1,7 +1,9 @@
 # 'projeto crud agendamento de tarefas 3000'
 
 objetivo: agendar tarefas
+
 tecnologias: php, html, sql
+
 estrutura: sei la
 
 para instalar é so instalar
@@ -14,4 +16,4 @@ para acessar o sistema é so acessar o sistema
 
 teste
 
-print("sucesso")
+print("sucesso");
