@@ -10,7 +10,7 @@ $status = $_POST['status'];
 $sql = "INSERT INTO tarefas(titulo,descricao,data_tarefa,status)
         VALUES('$titulo', '$descricao', '$data', '$status')";
 if ($conn->query($sql) === TRUE) {
-    header("Location: dashboard.php?status=sucesso_tarefa");
+    header("Location: dashboard.php?tab=tasks&status=task_cadastrada");
     exit;
     } else {
         header("Location: dashboard.php?status=erro");

@@ -22,11 +22,25 @@ $resultTotaltask = $conn->query($sqlTotaltask);
 // Ajustado para usar 'totalTarefas'
 $totalTarefas = ($resultTotaltask) ? $resultTotaltask->fetch_assoc()['totalTarefas'] : 0;
 // Exibição de mensagens (exemplo simples)
-if (isset($_GET['status'])) {
-    $tipo = ($_GET['status'] === 'sucesso') ? 'success' : 'danger';
-    $msg = ($_GET['status'] === 'sucesso') ? 'Usuário cadastrado com sucesso!' : 'Erro ao cadastrar.';
-    echo "<div class='alert alert-$tipo'>$msg</div>";
+
+$mensagens_status = [
+    'user_cadastrado' => ['texto' => 'Usuário cadastrado com sucesso!', 'tipo' => 'sucesso'],
+    'user_editado'    => ['texto' => 'Usuário atualizado com sucesso!', 'tipo' => 'sucesso'],
+    'user_excluido'   => ['texto' => 'Usuário removido com sucesso!', 'tipo' => 'sucesso'],
+    'task_cadastrada' => ['texto' => 'Tarefa adicionada com sucesso!', 'tipo' => 'sucesso'],
+    'task_editada'    => ['texto' => 'Tarefa atualizada com sucesso!', 'tipo' => 'sucesso'],
+    'task_excluida'   => ['texto' => 'Tarefa removida com sucesso!', 'tipo' => 'sucesso'],
+    'erro'            => ['texto' => 'Ocorreu um erro na operação.', 'tipo' => 'erro']
+];
+
+$mensagem = '';
+$tipoMensagem = '';
+
+if (isset($_GET['status']) && array_key_exists($_GET['status'], $mensagens_status)) {
+    $mensagem = $mensagens_status[$_GET['status']]['texto'];
+    $tipoMensagem = $mensagens_status[$_GET['status']]['tipo'];
 }
+
 ?>
 
 
@@ -318,13 +332,15 @@ if (isset($_GET['status'])) {
             </div>
             <div class="truncate">
                 <p class="text-on-primary font-label-sm truncate"><?php echo $nomeUsuario; ?></p>
-                <p class="text-outline-variant text-[10px] uppercase tracking-tighter truncate"><?php echo $emailUsuario; ?></p>
+                <p class="text-outline-variant text-[10px] tracking-tighter truncate"><?php echo $emailUsuario; ?></p>
             </div>
         </div>
-        <button class="w-full flex items-center px-4 py-3 font-label-sm text-label-sm transition-all duration-300 ease-in-out text-error bg-red-500/10 hover:bg-red-500/20 rounded-lg">
-            <span class="material-symbols-outlined mr-3 shrink-0" data-icon="logout">logout</span>
-            <span class="nav-label">Sair</span>
-        </button>
+        <a href="logout.php">
+            <button class="w-full flex items-center px-4 py-3 font-label-sm text-label-sm transition-all duration-300 ease-in-out text-error bg-red-500/10 hover:bg-red-500/20 rounded-lg">
+                <span class="material-symbols-outlined mr-3 shrink-0" data-icon="logout">logout</span>
+                <span class="nav-label">Sair</span>
+            </button>
+        </a>
     </div>
 </aside>
 <!-- Content Canvas -->
@@ -341,20 +357,21 @@ if (isset($_GET['status'])) {
             </button>
         </div>
     </header>
-    <!-- System Status Notification Area -->
-    <!--?php if (!empty($mensagem)): ?-->
-    <div class="mb-6 animate-fade-slide-up" id="system-notification" style="animation-delay: 0.02s">
-        <div class="&lt;!--?php echo $tipoMensagem === 'sucesso' ? 'status-success' : 'status-error'; ?--&gt; px-4 py-3 rounded-lg flex items-center justify-between border shadow-sm">
-            <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined" data-icon="&lt;!--?php echo $tipoMensagem === 'sucesso' ? 'check_circle' : 'error'; ?--&gt;"><!--?php echo $tipoMensagem === 'sucesso' ? 'check_circle' : 'error'; ?--></span>
-                <p class="font-body-md font-medium"><!--?php echo $mensagem; ?--></p>
+    <?php if (!empty($mensagem)): ?>
+        <div class="mb-6 animate-fade-slide-up" id="system-notification" style="animation-delay: 0.02s">
+            <div class="<?php echo $tipoMensagem === 'sucesso' ? 'status-success' : 'status-error'; ?> px-4 py-3 rounded-lg flex items-center justify-between border shadow-sm">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined">
+                        <?php echo $tipoMensagem === 'sucesso' ? 'check_circle' : 'error'; ?>
+                    </span>
+                    <p class="font-body-md font-medium"><?php echo $mensagem; ?></p>
+                </div>
+                <button class="p-1 hover:bg-black/5 rounded-full transition-all" onclick="document.getElementById('system-notification').style.display='none'">
+                    <span class="material-symbols-outlined text-lg">close</span>
+                </button>
             </div>
-            <button class="p-1 hover:bg-black/5 rounded-full transition-all" onclick="document.getElementById('system-notification').style.display='none'">
-                <span class="material-symbols-outlined text-lg" data-icon="close">close</span>
-            </button>
         </div>
-    </div>
-    <!--?php endif; ?-->
+    <?php endif; ?>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-gutter mb-stack_lg animate-fade-slide-up" style="animation-delay: 0.05s">
         <div class="bg-primary-container text-on-primary-container p-stack_lg rounded-xl flex items-center justify-between shadow-md">
             <div>
@@ -376,8 +393,129 @@ if (isset($_GET['status'])) {
         </div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter animate-fade-slide-up" id="content-grid" style="animation-delay: 0.1s; opacity: 1;">
-        <!-- Content will be injected by JS -->
+
+        <!-- CONTAINER DE FUNCIONÁRIOS (Controlado por ID ou Classe no seu JS) -->
+        <!-- Nota: Deixamos todos renderizados, o JS decide qual bloco fica visível -->
+
+        <?php
+        // 1. LISTAGEM DE USUÁRIOS
+        $sql = "SELECT * FROM usuarios";
+        $result = $conn->query($sql);
+        $index = 0;
+
+        if ($result->num_rows === 0): ?>
+            <div class="col-span-full text-center py-10 text-on-surface-variant employee-card-item">Nenhum funcionário encontrado.</div>
+            <?php else:
+            while ($row = $result->fetch_assoc()):
+                $initial = strtoupper(substr($row['nome'], 0, 1));
+            ?>
+                <!-- Cards de Funcionários -->
+                <div class="employee-card-item bg-surface border border-outline-variant p-stack_md rounded-xl smooth-hover transition-all duration-300 ease-in-out group animate-fade-slide-up" style="animation-delay: <?php echo $index * 0.05; ?>s; opacity: 1;">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-12 h-12 bg-primary-fixed text-on-primary-fixed-variant rounded-full flex items-center justify-center font-headline-sm transition-transform duration-300 group-hover:scale-110">
+                                <?php echo $initial; ?>
+                            </div>
+                            <span class="text-xs font-mono text-on-surface-variant/40">#<?php echo $row['id']; ?></span>
+                        </div>
+
+                        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <!-- CORREÇÃO: Chamando openEditEmployee(this) -->
+                            <button
+                                data-id="<?php echo $row['id']; ?>"
+                                data-nome="<?php echo htmlspecialchars($row['nome']); ?>"
+                                data-email="<?php echo htmlspecialchars($row['email']); ?>"
+                                onclick="openEditEmployee(this)"
+                                class="p-2 text-on-surface-variant hover:text-primary transition-all duration-300">
+                                <span class="material-symbols-outlined text-[20px]">edit</span>
+                            </button>
+                            <!-- CORREÇÃO: Chamando openDeleteEmployee(this) -->
+                            <button
+                                data-id="<?php echo $row['id']; ?>"
+                                data-nome="<?php echo htmlspecialchars($row['nome']); ?>"
+                                onclick="openDeleteEmployee(this)"
+                                class="p-2 text-on-surface-variant hover:text-error transition-all duration-300">
+                                <span class="material-symbols-outlined text-[20px]">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <h4 class="font-headline-sm text-headline-sm mb-1 truncate transition-colors duration-300 group-hover:text-primary"><?php echo $row['nome']; ?></h4>
+                    <p class="font-body-md text-on-surface-variant truncate"><?php echo $row['email']; ?></p>
+                </div>
+        <?php
+                $index++;
+            endwhile;
+        endif; ?>
+
+
+        <?php
+        // 2. LISTAGEM DE TAREFAS
+        $sqlTasks = "SELECT * FROM tarefas";
+        $resultTasks = $conn->query($sqlTasks);
+        $indexTask = 0;
+
+        if ($resultTasks->num_rows === 0): ?>
+            <div class="col-span-full text-center py-10 text-on-surface-variant task-card-item hidden">Nenhuma tarefa encontrada.</div>
+            <?php else:
+            while ($rowTask = $resultTasks->fetch_assoc()):
+
+                $dataColuna = !empty($rowTask['data_tarefa']) ? $rowTask['data_tarefa'] : '2026-01-01';
+                $formattedDate = date('d/m/Y', strtotime($dataColuna));
+
+                $status = $rowTask['status'];
+                $colorClass = "bg-surface-variant text-on-surface-variant";
+
+                if ($status === 'Em Andamento') {
+                    $colorClass = "bg-secondary-container text-on-secondary-container";
+                } elseif ($status === 'Concluída') {
+                    $colorClass = "bg-tertiary-fixed text-on-tertiary-fixed";
+                }
+            ?>
+                <!-- Cards de Tarefas -->
+                <div class="task-card-item hidden bg-surface border border-outline-variant p-stack_md rounded-xl smooth-hover transition-all duration-300 ease-in-out flex flex-col h-full animate-fade-slide-up" style="animation-delay: <?php echo $indexTask * 0.05; ?>s; opacity: 1;">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="px-2 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider <?php echo $colorClass; ?> transition-colors duration-300"><?php echo $status; ?></span>
+
+                        <div class="flex gap-1">
+                            <!-- CORREÇÃO: Chamando openEditTask(this) -->
+                            <button
+                                data-id="<?php echo $rowTask['id']; ?>"
+                                data-titulo="<?php echo htmlspecialchars($rowTask['titulo']); ?>"
+                                data-descricao="<?php echo htmlspecialchars($rowTask['descricao']); ?>"
+                                data-status="<?php echo htmlspecialchars($rowTask['status']); ?>"
+                                data-data="<?php echo $dataColuna; ?>"
+                                onclick="openEditTask(this)"
+                                class="p-1.5 text-on-surface-variant hover:text-primary transition-all duration-300">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </button>
+                            <!-- CORREÇÃO: Chamando openDeleteTask(this) -->
+                            <button
+                                data-id="<?php echo $rowTask['id']; ?>"
+                                data-titulo="<?php echo htmlspecialchars($rowTask['titulo']); ?>"
+                                onclick="openDeleteTask(this)"
+                                class="p-1.5 text-on-surface-variant hover:text-error transition-all duration-300">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <h4 class="font-headline-sm text-headline-sm mb-2 transition-colors duration-300">
+                        <span class="text-xs font-mono text-on-surface-variant/40 mr-1">#<?php echo $rowTask['id']; ?></span>
+                        <?php echo $rowTask['titulo']; ?>
+                    </h4>
+                    <p class="font-body-md text-on-surface-variant mb-4 flex-1 line-clamp-3"><?php echo $rowTask['descricao']; ?></p>
+                    <div class="pt-4 border-t border-outline-variant flex items-center text-on-surface-variant">
+                        <span class="material-symbols-outlined text-[18px] mr-2">calendar_today</span>
+                        <span class="font-label-sm"><?php echo $formattedDate; ?></span>
+                    </div>
+                </div>
+        <?php
+                $indexTask++;
+            endwhile;
+        endif; ?>
+
+
     </div>
+
 </main>
 <!-- 1. Create Employee Modal -->
 <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden" id="employee-create-modal">
@@ -421,6 +559,7 @@ if (isset($_GET['status'])) {
         </div>
         <form action="editar_usuario.php" class="space-y-stack_md" id="edit-employee-form" method="POST">
             <input id="edit-emp-id" name="id" type="hidden" />
+            <input type="hidden" name="acao" value="editar_user">
             <div>
                 <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Nome</label>
                 <input class="w-full bg-surface border border-outline-variant px-stack_md py-2.5 rounded-lg focus:border-primary transition-all outline-none" id="edit-emp-nome" name="nome" required="" type="text" />
@@ -510,6 +649,7 @@ if (isset($_GET['status'])) {
         </div>
         <form action="editar_task.php" class="space-y-stack_md" id="edit-task-form" method="POST">
             <input id="edit-task-id" name="id" type="hidden" />
+            <input type="hidden" name="acao" value="editar_task">
             <div>
                 <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Título da Tarefa</label>
                 <input class="w-full bg-surface border border-outline-variant px-stack_md py-2.5 rounded-lg focus:border-primary transition-all outline-none" id="edit-task-titulo" name="titulo" required="" type="text" />
@@ -562,136 +702,16 @@ if (isset($_GET['status'])) {
     <span class="material-symbols-outlined transition-transform duration-300" data-icon="menu" id="toggle-icon">menu</span>
 </button>
 <script>
-    const employees = [{
-            id: 1,
-            name: "Ana Beatriz Rocha",
-            email: "ana.rocha@techsolutions.com",
-            initial: "A"
-        },
-        {
-            id: 2,
-            name: "Carlos Eduardo Mendes",
-            email: "carlos.m@techsolutions.com",
-            initial: "C"
-        },
-        {
-            id: 3,
-            name: "Fernanda Lima",
-            email: "f.lima@techsolutions.com",
-            initial: "F"
-        },
-        {
-            id: 4,
-            name: "Gabriel Souza",
-            email: "gabriel.souza@techsolutions.com",
-            initial: "G"
-        },
-        {
-            id: 5,
-            name: "Mariana Costa",
-            email: "m.costa@techsolutions.com",
-            initial: "M"
-        },
-        {
-            id: 6,
-            name: "Ricardo Oliveira",
-            email: "r.oliveira@techsolutions.com",
-            initial: "R"
-        }
-    ];
-
-    const tasks = [{
-            id: 1,
-            title: "Migração de Banco de Dados",
-            desc: "Atualizar instâncias PostgreSQL para versão 15.",
-            date: "2024-05-24",
-            status: "Em Andamento",
-            color: "bg-secondary-container text-on-secondary-container"
-        },
-        {
-            id: 2,
-            title: "Revisão de Segurança",
-            desc: "Auditoria completa nos endpoints de autenticação.",
-            date: "2024-05-26",
-            status: "Pendente",
-            color: "bg-surface-variant text-on-surface-variant"
-        },
-        {
-            id: 3,
-            title: "Frontend Refactoring",
-            desc: "Implementar componentes baseados em Tailwind v3.4.",
-            date: "2024-05-22",
-            status: "Concluída",
-            color: "bg-tertiary-fixed text-on-tertiary-fixed"
-        },
-        {
-            id: 4,
-            title: "Deploy Ambiente Staging",
-            desc: "Configurar pipeline CI/CD para o novo cluster K8s.",
-            date: "2024-05-28",
-            status: "Pendente",
-            color: "bg-surface-variant text-on-surface-variant"
-        }
-    ];
-
     let currentTab = 'employees';
     let sidebarOpen = false;
 
-    function renderEmployees() {
-        const grid = document.getElementById('content-grid');
-        grid.innerHTML = employees.map((emp, index) => `
-            <div class="bg-surface border border-outline-variant p-stack_md rounded-xl smooth-hover transition-all duration-300 ease-in-out group opacity-0 animate-fade-slide-up" style="animation-delay: ${index * 0.05}s">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="w-12 h-12 bg-primary-fixed text-on-primary-fixed-variant rounded-full flex items-center justify-center font-headline-sm transition-transform duration-300 group-hover:scale-110">
-                        ${emp.initial}
-                    </div>
-                    <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <button onclick="openEditEmployee(${emp.id})" class="p-2 text-on-surface-variant hover:text-primary transition-all duration-300">
-                            <span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
-                        </button>
-                        <button onclick="openDeleteEmployee(${emp.id})" class="p-2 text-on-surface-variant hover:text-error transition-all duration-300">
-                            <span class="material-symbols-outlined text-[20px]" data-icon="delete">delete</span>
-                        </button>
-                    </div>
-                </div>
-                <h4 class="font-headline-sm text-headline-sm mb-1 truncate transition-colors duration-300 group-hover:text-primary">${emp.name}</h4>
-                <p class="font-body-md text-on-surface-variant truncate">${emp.email}</p>
-            </div>
-        `).join('');
-    }
-
-    function renderTasks() {
-        const grid = document.getElementById('content-grid');
-        grid.innerHTML = tasks.map((task, index) => {
-            const formattedDate = task.date.split('-').reverse().join('/');
-            return `
-            <div class="bg-surface border border-outline-variant p-stack_md rounded-xl smooth-hover transition-all duration-300 ease-in-out flex flex-col h-full opacity-0 animate-fade-slide-up" style="animation-delay: ${index * 0.05}s">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="px-2 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${task.color} transition-colors duration-300">${task.status}</span>
-                    <div class="flex gap-1">
-                        <button onclick="openEditTask(${task.id})" class="p-1.5 text-on-surface-variant hover:text-primary transition-all duration-300">
-                            <span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
-                        </button>
-                        <button onclick="openDeleteTask(${task.id})" class="p-1.5 text-on-surface-variant hover:text-error transition-all duration-300">
-                            <span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
-                        </button>
-                    </div>
-                </div>
-                <h4 class="font-headline-sm text-headline-sm mb-2 transition-colors duration-300">${task.title}</h4>
-                <p class="font-body-md text-on-surface-variant mb-4 flex-1 line-clamp-3">${task.desc}</p>
-                <div class="pt-4 border-t border-outline-variant flex items-center text-on-surface-variant">
-                    <span class="material-symbols-outlined text-[18px] mr-2" data-icon="calendar_today">calendar_today</span>
-                    <span class="font-label-sm">${formattedDate}</span>
-                </div>
-            </div>
-        `
-        }).join('');
-    }
+    // Removemos as funções antigas renderEmployees() e renderTasks() que reinjetavam dados fictícios.
 
     function switchTab(tab) {
         if (currentTab === tab && window.innerWidth >= 768) return;
         const grid = document.getElementById('content-grid');
         grid.style.opacity = '0';
+
         setTimeout(() => {
             currentTab = tab;
             const titleEl = document.getElementById('current-tab-title');
@@ -701,6 +721,10 @@ if (isset($_GET['status'])) {
             const navEmp = document.getElementById('nav-employees');
             const navTask = document.getElementById('nav-tasks');
 
+            // Captura todos os cards gerados pelo PHP
+            const cardsFuncionarios = document.querySelectorAll('.employee-card-item');
+            const cardsTarefas = document.querySelectorAll('.task-card-item');
+
             if (tab === 'employees') {
                 titleEl.textContent = 'Funcionários';
                 subEl.textContent = 'Gerencie a equipe e permissões corporativas.';
@@ -708,7 +732,10 @@ if (isset($_GET['status'])) {
                 addBtnIcon.textContent = 'add';
                 navEmp.className = "w-full relative flex items-center px-4 py-3 text-on-primary bg-white/5 active-pill font-label-sm transition-all duration-300 ease-in-out";
                 navTask.className = "w-full flex items-center px-4 py-3 text-slate-400 hover:text-on-primary hover:bg-white/10 font-label-sm transition-all duration-300 ease-in-out";
-                renderEmployees();
+
+                // Mágica visual: Mostra funcionários e esconde tarefas
+                cardsFuncionarios.forEach(el => el.classList.remove('hidden'));
+                cardsTarefas.forEach(el => el.classList.add('hidden'));
             } else {
                 titleEl.textContent = 'Tarefas';
                 subEl.textContent = 'Acompanhe o progresso dos projetos ativos.';
@@ -716,8 +743,12 @@ if (isset($_GET['status'])) {
                 addBtnIcon.textContent = 'add_task';
                 navTask.className = "w-full relative flex items-center px-4 py-3 text-on-primary bg-white/5 active-pill font-label-sm transition-all duration-300 ease-in-out";
                 navEmp.className = "w-full flex items-center px-4 py-3 text-slate-400 hover:text-on-primary hover:bg-white/10 font-label-sm transition-all duration-300 ease-in-out";
-                renderTasks();
+
+                // Mágica visual: Esconde funcionários e mostra tarefas
+                cardsFuncionarios.forEach(el => el.classList.add('hidden'));
+                cardsTarefas.forEach(el => el.classList.remove('hidden'));
             }
+
             grid.style.opacity = '1';
             if (window.innerWidth < 768 && sidebarOpen) toggleSidebar();
         }, 150);
@@ -731,44 +762,52 @@ if (isset($_GET['status'])) {
         }
     }
 
-    function openEditEmployee(id) {
-        const emp = employees.find(e => e.id === id);
-        if (emp) {
-            document.getElementById('edit-emp-id').value = emp.id;
-            document.getElementById('edit-emp-nome').value = emp.name;
-            document.getElementById('edit-emp-email').value = emp.email;
-            openModal('employee-edit-modal');
-        }
+    // ADAPTADO: Agora recebe o botão clicado (this) vindo do card PHP de Usuários
+    function openEditEmployee(botao) {
+        const id = botao.getAttribute('data-id');
+        const nome = botao.getAttribute('data-nome');
+        const email = botao.getAttribute('data-email');
+
+        document.getElementById('edit-emp-id').value = id;
+        document.getElementById('edit-emp-nome').value = nome;
+        document.getElementById('edit-emp-email').value = email;
+        openModal('employee-edit-modal');
     }
 
-    function openDeleteEmployee(id) {
-        const emp = employees.find(e => e.id === id);
-        if (emp) {
-            document.getElementById('delete-emp-id').value = emp.id;
-            document.getElementById('delete-emp-text').innerHTML = `Tem certeza que deseja excluir <strong>'${emp.name}'</strong>?`;
-            openModal('employee-delete-modal');
-        }
+    // ADAPTADO: Agora recebe o botão clicado (this) vindo do card PHP de Usuários
+    function openDeleteEmployee(botao) {
+        const id = botao.getAttribute('data-id');
+        const nome = botao.getAttribute('data-nome');
+
+        document.getElementById('delete-emp-id').value = id;
+        document.getElementById('delete-emp-text').innerHTML = `Tem certeza que deseja excluir <strong>'${nome}'</strong>?`;
+        openModal('employee-delete-modal');
     }
 
-    function openEditTask(id) {
-        const task = tasks.find(t => t.id === id);
-        if (task) {
-            document.getElementById('edit-task-id').value = task.id;
-            document.getElementById('edit-task-titulo').value = task.title;
-            document.getElementById('edit-task-desc').value = task.desc;
-            document.getElementById('edit-task-data').value = task.date;
-            document.getElementById('edit-task-status').value = task.status;
-            openModal('task-edit-modal');
-        }
+    // ADAPTADO: Agora recebe o botão clicado (this) vindo do card PHP de Tarefas
+    function openEditTask(botao) {
+        const id = botao.getAttribute('data-id');
+        const titulo = botao.getAttribute('data-titulo');
+        const descricao = botao.getAttribute('data-descricao');
+        const status = botao.getAttribute('data-status');
+        const data = botao.getAttribute('data-data'); // Formato AAAA-MM-DD
+
+        document.getElementById('edit-task-id').value = id;
+        document.getElementById('edit-task-titulo').value = titulo;
+        document.getElementById('edit-task-desc').value = descricao;
+        document.getElementById('edit-task-data').value = data;
+        document.getElementById('edit-task-status').value = status;
+        openModal('task-edit-modal');
     }
 
-    function openDeleteTask(id) {
-        const task = tasks.find(t => t.id === id);
-        if (task) {
-            document.getElementById('delete-task-id').value = task.id;
-            document.getElementById('delete-task-text').innerHTML = `Tem certeza que deseja excluir <strong>'${task.title}'</strong>?`;
-            openModal('task-delete-modal');
-        }
+    // ADAPTADO: Agora recebe o botão clicado (this) vindo do card PHP de Tarefas
+    function openDeleteTask(botao) {
+        const id = botao.getAttribute('data-id');
+        const titulo = botao.getAttribute('data-titulo');
+
+        document.getElementById('delete-task-id').value = id;
+        document.getElementById('delete-task-text').innerHTML = `Tem certeza que deseja excluir <strong>'${titulo}'</strong>?`;
+        openModal('task-delete-modal');
     }
 
     function openModal(id) {
@@ -815,16 +854,25 @@ if (isset($_GET['status'])) {
         }
     }, 5000);
 
-    // Form handlers for demo (prevents full reload but keeps logic)
+    // Form handlers - REMOVIDO o e.preventDefault() para permitir o envio do formulário ao PHP externo
     document.querySelectorAll('form').forEach(form => {
         form.addEventListener('submit', (e) => {
-            // Note: In a real server app, we wouldn't preventDefault if we want POST to work.
             const modalId = form.closest('[id]').id;
             console.log(`Submitted form in ${modalId}`);
         });
     });
 
-    renderEmployees();
+
+    // 2. Adicione este bloco no FINAL do seu script para ler a URL apenas UMA VEZ ao carregar
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get('tab');
+
+        // Se na URL estiver 'tasks', força a abertura da aba de tarefas
+        if (tab === 'tasks') {
+            switchTab('tasks');
+        }
+    });
 </script>
 </body>
 

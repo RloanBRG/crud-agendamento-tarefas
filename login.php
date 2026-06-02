@@ -229,7 +229,7 @@
                 <h2 class="font-headline-md text-headline-md text-on-surface tracking-tight">Criar Conta</h2>
                 <p class="font-body-md text-body-md text-on-surface-variant mt-1">Preencha os dados para iniciar sua jornada.</p>
             </div>
-            <form class="space-y-stack_md" id="registerForm" onsubmit="event.preventDefault();">
+            <form class="space-y-stack_md" id="registerForm" method="POST" action="cadastrar_usuario.php">
                 <!-- Name Field -->
                 <div class="flex flex-col gap-2">
                     <label class="font-label-sm text-label-sm text-on-surface-variant px-1" for="reg_name">Nome Completo</label>
@@ -237,7 +237,7 @@
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px] group-focus-within:text-primary transition-colors">
                             person
                         </span>
-                        <input class="w-full h-11 pl-10 pr-4 bg-background border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline/60 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all" id="reg_name" placeholder="Seu nome completo" required="" type="text" />
+                        <input class="w-full h-11 pl-10 pr-4 bg-background border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline/60 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all" id="reg_name" placeholder="Seu nome completo" required="" type="text" name="nome" />
                     </div>
                 </div>
                 <!-- Email Field -->
@@ -247,7 +247,7 @@
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px] group-focus-within:text-primary transition-colors">
                             mail
                         </span>
-                        <input class="w-full h-11 pl-10 pr-4 bg-background border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline/60 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all" id="reg_email" placeholder="seu@email.com.br" required="" type="email" />
+                        <input class="w-full h-11 pl-10 pr-4 bg-background border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline/60 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all" id="reg_email" placeholder="seu@email.com.br" required="" type="email" name="email"/>
                     </div>
                 </div>
                 <!-- Password Field -->
@@ -257,7 +257,7 @@
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px] group-focus-within:text-primary transition-colors">
                             lock
                         </span>
-                        <input class="w-full h-11 pl-10 pr-12 bg-background border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline/60 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all" id="reg_password" placeholder="Mínimo 8 caracteres" required="" type="password" />
+                        <input class="w-full h-11 pl-10 pr-12 bg-background border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline/60 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all" id="reg_password" placeholder="Senha" required="" type="password" name="senha"/>
                         <button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface transition-colors" onclick="togglePassword('reg_password', 'regPassIcon')" type="button">
                             <span class="material-symbols-outlined text-[20px]" id="regPassIcon">visibility</span>
                         </button>

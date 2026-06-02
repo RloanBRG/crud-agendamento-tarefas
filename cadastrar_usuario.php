@@ -9,7 +9,7 @@ $senha = $_POST['senha'];
 $sql = "INSERT INTO usuarios(nome,email,senha)
         VALUES('$nome', '$email', '$senha')";
 if ($conn->query($sql) === TRUE) {
-    header("Location: dashboard.php?status=sucesso");
+    header("Location: dashboard.php?status=user_cadastrado");
     exit;
     } else {
         header("Location: dashboard.php?status=erro");
