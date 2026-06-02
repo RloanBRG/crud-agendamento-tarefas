@@ -5,7 +5,7 @@ if($_POST['acao'] == 'editar_task') {
     $id = $_POST['id'];
     $titulo = $_POST['titulo'];
     $descricao = $_POST['descricao'];
-    $data_tarefa = $_POST['data_tarefa'];
+    $data_tarefa = $_POST['data'];
     $status = $_POST['status'];
 
         //se descricao nova
