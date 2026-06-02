@@ -1,10 +1,11 @@
-# 'projeto crud agendamento de tarefas 3000'
+# Nome do projeto: Sistema de agendamento de ususarios e tarefas via crud
+## TechSolucions interprise.
 
-objetivo: agendar tarefas
+### objetivo: ajudar empresas a gerenciarem os agendamentos de tarefas e cadastro de usuarios em uma plataforma com crud integrado
 
-tecnologias: php, html, sql
+tecnologias utilizadas: PHP (logica com banco de dados, HTML, CSS, JS (pagina web), MySql
 
-estrutura: sei la
+estrutura do projeto: (relação dos arquivos)
 
 para instalar é so instalar
 
