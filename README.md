@@ -32,49 +32,49 @@ crud-agendamento-tarefas/
     └── excluir_tarefa.php
 ```
 # 🪛 Instalação: 
-  - ## Configurar banco de dados:
-  1. Verifique se Xampp está instalado na sua maquina.
-  2. Abre o xampp e ative as opções 'Apache' e 'MySql'.
-  3. Em um navegador acesse 'localhost' e entre no 'phpMyadmin'.
-  4. Copie o codigo sql a baixo e crie o banco de dados na aba sql no 'phpMyadmin':
+- ## Configurar banco de dados:
+ 1. Verifique se Xampp está instalado na sua maquina.
+ 2. Abre o xampp e ative as opções 'Apache' e 'MySql'.
+ 3. Em um navegador acesse 'localhost' e entre no 'PhpMyAdmin'.
+ 4. Copie o codigo SQL a baixo e crie o banco de dados na aba sql no 'PhpMyAdmin':
+
+ ### Codigo SQL:
+ 
+  ``` text
+  CREATE DATABASE empresa_agendamento;
   
-   Codigo Sql:
+  USE empresa_agendamento;
   
-    ``` text
-    CREATE DATABASE empresa_agendamento;
-    
-    USE empresa_agendamento;
-    
-    CREATE TABLE usuarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100),
-    email VARCHAR(100),
-    senha VARCHAR(100)
-    );
-    
-    CREATE TABLE tarefas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(100),
-    descricao TEXT,
-    data_tarefa DATE,
-    status VARCHAR(50)
-    );
-    ```
+  CREATE TABLE usuarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100),
+  email VARCHAR(100),
+  senha VARCHAR(100)
+  );
   
-  - ## Git clone via Visual Studio Code:
-  1. Verifique se git está instalado na sua maquina.
-  2. Crie uma nova pasta na pasta htdocs dentro do xampp encontrado no disco local C.
-  3. Copie o url desse repositorio 'https://github.com/RloanBRG/crud-agendamento-tarefas'
-  4. Abre um novo terminal e digite git clone 'repositorio' e aperte enter
-  5. Uma pasta sera gerada contendo os arquivos .php e suas pastas
-  6. o camanho final deve ser parecido com isso "C:/xampp/htdocs/nova_pasta/crud-agendamento-tarefas"
-  
-  - ## Teste do sistema:
-  1. Acesse 'localhost/nova_pasta/crud-agendamento-tarefas', uma tela de login deve aparecer.
-  2. O sistema deve funcionar de imediato, basta registrar um novo usuario/funcionario para acessar o dashboard.
-  3. Em caso de erros:
-  4. Verificar se o nome do banco de dados esta igual ao que o arquivo conexao.php requere "empresa_agendamento".
-  5. Verificar se o Xampp esta ativado durante o uso do sistema. 
+  CREATE TABLE tarefas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  titulo VARCHAR(100),
+  descricao TEXT,
+  data_tarefa DATE,
+  status VARCHAR(50)
+  );
+  ```
+ 
+- ## Git clone via Visual Studio Code:
+ 1. Verifique se o Git está instalado na sua maquina.
+ 2. No Visual Studio Code, selecione 'abrir pasta' e navege pelo disco local C, encontre a pasta do xampp e dentro da pasta xampp encontre a pasta htdocs, abre ela como pasta do projeto.
+ 3. Copie o url desse repositorio 'https://github.com/RloanBRG/crud-agendamento-tarefas'
+ 4. Abre um novo terminal e digite git clone 'repositorio' e aperte enter. (certifique-se que aparece o caminho parecido com este "C:/xampp/htdocs> ")
+ 5. Uma pasta sera gerada contendo os arquivos .php e suas pastas.
+ 6. Abre a pasta clonada.
+ 7. O camanho final deve ser parecido com isso "C:/xampp/htdocs/crud-agendamento-tarefas".
+ 
+- ## Teste do sistema:
+ 1. Acesse 'localhost/crud-agendamento-tarefas', uma tela de login deve aparecer.
+ 2. O sistema funcionará de imediato, basta registrar um novo usuario/funcionario para acessar o dashboard.<br></br>Em caso de erros:
+ 3. Verificar se o Xampp esta ativado durante o uso do sistema.
+ 4. Verificar se o nome do banco de dados esta igual ao que o arquivo conexao.php requere "empresa_agendamento".
 
 ## 📷 Prints:
  
