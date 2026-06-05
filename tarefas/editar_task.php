@@ -1,5 +1,6 @@
 <?php
-include ("conexao.php");
+
+include("../sistema/conexao.php");
 
 if($_POST['acao'] == 'editar_task') {
     $id = $_POST['id'];
@@ -25,10 +26,10 @@ if($_POST['acao'] == 'editar_task') {
         }
 
         if ($conn->query($sql) === TRUE) {
-        header("Location: dashboard.php?tab=tasks&status=task_editada");
+        header("Location: ../sistema/dashboard.php?tab=tasks&status=task_editada");
         exit;
         } else {
-            header("Location: dashboard.php?status=erro");
+            header("Location: ../sistema/dashboard.php?status=erro");
             exit;
     } 
 }

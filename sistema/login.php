@@ -229,7 +229,7 @@
                 <h2 class="font-headline-md text-headline-md text-on-surface tracking-tight">Criar Conta</h2>
                 <p class="font-body-md text-body-md text-on-surface-variant mt-1">Preencha os dados para iniciar sua jornada.</p>
             </div>
-            <form class="space-y-stack_md" id="registerForm" method="POST" action="cadastrar_usuario.php">
+            <form class="space-y-stack_md" id="registerForm" method="POST" action="../usuarios/cadastrar_usuario.php">
                 <!-- Name Field -->
                 <div class="flex flex-col gap-2">
                     <label class="font-label-sm text-label-sm text-on-surface-variant px-1" for="reg_name">Nome Completo</label>

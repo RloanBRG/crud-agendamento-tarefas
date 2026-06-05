@@ -1,5 +1,7 @@
 <?php
-include ("conexao.php");
+
+include("../sistema/conexao.php");
+
 if (isset($_POST['id'])) {
     // Protege a variável convertendo para número inteiro
     $id = intval($_POST['id']);
@@ -7,10 +9,10 @@ if (isset($_POST['id'])) {
     $sql = "DELETE FROM usuarios WHERE id=$id";
 
         if ($conn->query($sql) === TRUE) {
-        header("Location: dashboard.php?status=user_excluido");
+        header("Location: ../sistema/dashboard.php?status=user_excluido");
         exit;
         } else {
-        header("Location: dashboard.php?status=erro");
+        header("Location: ../sistema/dashboard.php?status=erro");
         exit;
     } 
 }

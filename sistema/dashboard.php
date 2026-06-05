@@ -527,7 +527,7 @@ if (isset($_GET['status']) && array_key_exists($_GET['status'], $mensagens_statu
                 <span class="material-symbols-outlined" data-icon="close">close</span>
             </button>
         </div>
-        <form action="cadastrar_usuario.php" class="space-y-stack_md" method="POST">
+        <form action="../usuarios/cadastrar_usuario.php" class="space-y-stack_md" method="POST">
             <div>
                 <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Nome</label>
                 <input class="w-full bg-surface border border-outline-variant px-stack_md py-2.5 rounded-lg focus:border-primary transition-all outline-none" name="nome" placeholder="Ex: Rodrigo Silva" required="" type="text" />
@@ -557,7 +557,7 @@ if (isset($_GET['status']) && array_key_exists($_GET['status'], $mensagens_statu
                 <span class="material-symbols-outlined" data-icon="close">close</span>
             </button>
         </div>
-        <form action="editar_usuario.php" class="space-y-stack_md" id="edit-employee-form" method="POST">
+        <form action="../usuarios/editar_usuario.php" class="space-y-stack_md" id="edit-employee-form" method="POST">
             <input id="edit-emp-id" name="id" type="hidden" />
             <input type="hidden" name="acao" value="editar_user">
             <div>
@@ -589,7 +589,7 @@ if (isset($_GET['status']) && array_key_exists($_GET['status'], $mensagens_statu
             </div>
             <h3 class="font-headline-sm text-headline-sm mb-2">Excluir Funcionário</h3>
             <p class="font-body-md text-on-surface-variant mb-stack_lg" id="delete-emp-text">Tem certeza que deseja excluir [Nome]?</p>
-            <form action="excluir_usuario.php" class="flex gap-stack_md" method="POST">
+            <form action="../usuarios/excluir_usuario.php" class="flex gap-stack_md" method="POST">
                 <input id="delete-emp-id" name="id" type="hidden" />
                 <button class="flex-1 py-2.5 border border-outline-variant hover:bg-surface-container-low rounded-lg font-label-sm" onclick="closeModal('employee-delete-modal')" type="button">Cancelar</button>
                 <button class="flex-1 py-2.5 bg-error text-on-error hover:bg-red-700 rounded-lg font-label-sm shadow-md transition-all" type="submit">Excluir</button>
@@ -607,7 +607,7 @@ if (isset($_GET['status']) && array_key_exists($_GET['status'], $mensagens_statu
                 <span class="material-symbols-outlined" data-icon="close">close</span>
             </button>
         </div>
-        <form action="cadastrar_task.php" class="space-y-stack_md" method="POST">
+        <form action="../tarefas/cadastrar_task.php" class="space-y-stack_md" method="POST">
             <div>
                 <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1">Título da Tarefa</label>
                 <input class="w-full bg-surface border border-outline-variant px-stack_md py-2.5 rounded-lg focus:border-primary transition-all outline-none" name="titulo" placeholder="Ex: Refatoração do Dashboard" required="" type="text" />
@@ -647,7 +647,7 @@ if (isset($_GET['status']) && array_key_exists($_GET['status'], $mensagens_statu
                 <span class="material-symbols-outlined" data-icon="close">close</span>
             </button>
         </div>
-        <form action="editar_task.php" class="space-y-stack_md" id="edit-task-form" method="POST">
+        <form action="../tarefas/editar_task.php" class="space-y-stack_md" id="edit-task-form" method="POST">
             <input id="edit-task-id" name="id" type="hidden" />
             <input type="hidden" name="acao" value="editar_task">
             <div>
@@ -689,7 +689,7 @@ if (isset($_GET['status']) && array_key_exists($_GET['status'], $mensagens_statu
             </div>
             <h3 class="font-headline-sm text-headline-sm mb-2">Excluir Tarefa</h3>
             <p class="font-body-md text-on-surface-variant mb-stack_lg" id="delete-task-text">Tem certeza que deseja excluir [Título]?</p>
-            <form action="excluir_task.php" class="flex gap-stack_md" method="POST">
+            <form action="../tarefas/excluir_task.php" class="flex gap-stack_md" method="POST">
                 <input id="delete-task-id" name="id" type="hidden" />
                 <button class="flex-1 py-2.5 border border-outline-variant hover:bg-surface-container-low rounded-lg font-label-sm" onclick="closeModal('task-delete-modal')" type="button">Cancelar</button>
                 <button class="flex-1 py-2.5 bg-error text-on-error hover:bg-red-700 rounded-lg font-label-sm shadow-md transition-all" type="submit">Excluir</button>

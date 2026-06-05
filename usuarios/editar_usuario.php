@@ -1,5 +1,6 @@
 <?php
-include ("conexao.php");
+
+include("../sistema/conexao.php");
 
 if(isset($_POST['acao']) && $_POST['acao'] == 'editar_user') {
 
@@ -23,10 +24,10 @@ if(isset($_POST['acao']) && $_POST['acao'] == 'editar_user') {
         }
 
         if ($conn->query($sql) === TRUE) {
-        header("Location: dashboard.php?status=user_editado");
+        header("Location: ../sistema/dashboard.php?status=user_editado");
         exit;
         } else {
-            header("Location: dashboard.php?status=erro");
+            header("Location: ../sistema/dashboard.php?status=erro");
             exit;
     } 
 }
